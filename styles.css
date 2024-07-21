@@ -1,0 +1,48 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+#game-container {
+    text-align: center;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#word-display {
+    font-size: 2em;
+    margin: 20px 0;
+}
+
+#guess-input {
+    padding: 10px;
+    font-size: 1em;
+    width: 50px;
+    text-align: center;
+}
+
+#guess-button {
+    padding: 10px 20px;
+    font-size: 1em;
+}
+
+#hangman {
+    margin: 20px 0;
+    height: 200px;
+    width: 200px;
+    background: url('hangman.png') no-repeat center;
+    background-size: contain;
+}
+
+#message {
+    font-size: 1.2em;
+    color: red;
+    margin: 10px 0;
+}
