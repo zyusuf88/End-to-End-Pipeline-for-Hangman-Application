@@ -62,7 +62,9 @@ jobs:
             docker stop my_app || true
             docker rm my_app || true
             docker run -d --name my_app -p 80:80 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_NAME }}:latest
+            EOF
 
+            
       # - name: Update EC2 Instance
       #   run: |
       #      ssh -vvv -o StrictHostKeyChecking=no ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
