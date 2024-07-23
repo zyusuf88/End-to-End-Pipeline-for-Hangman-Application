@@ -56,17 +56,24 @@ jobs:
 
       - name: Log in to Amazon ECR on EC2 Instance
         run: |
-         ssh -vvv -o StrictHostKeyChecking=no ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
-         aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-         exit
-         EOF
+          ssh -vvv -o StrictHostKeyChecking=no ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
+            # AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and AWS_REGION set inline before command
+            AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} AWS_REGION=${{ secrets.AWS_REGION }} \
+            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+            exit
+          EOF
+
 
 
       - name: Update EC2 Instance
         run: |
           ssh -vvv -o StrictHostKeyChecking=no ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
+            # AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and AWS_REGION set inline before command
+            AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} AWS_REGION=${{ secrets.AWS_REGION }} \
             docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_NAME }}:latest
             docker stop hangman-container || true
             docker rm hangman-container || true
             docker run -d --name hangman-container -p 80:5000 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_NAME }}:latest
+            exit
           EOF
+
