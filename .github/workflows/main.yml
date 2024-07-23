@@ -54,6 +54,14 @@ jobs:
             exit
           EOF
 
+      - name: Log in to Amazon ECR on EC2 Instance
+        run: |
+         ssh -vvv -o StrictHostKeyChecking=no ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
+         aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+         exit
+         EOF
+
+
       - name: Update EC2 Instance
         run: |
           ssh -vvv -o StrictHostKeyChecking=no ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
