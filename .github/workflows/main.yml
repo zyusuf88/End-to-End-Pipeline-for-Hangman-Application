@@ -49,7 +49,7 @@ jobs:
           ssh -vvv -o StrictHostKeyChecking=no ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
             sudo yum update -y
             sudo yum install -y docker
-            sudo service docker start
+            sudo systemctl start docker
             sudo usermod -aG docker ec2-user
             exit
           EOF
