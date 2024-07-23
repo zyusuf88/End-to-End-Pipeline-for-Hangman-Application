@@ -52,6 +52,11 @@ jobs:
             sudo systemctl start docker
             sudo systemctl enable docker
             sudo usermod -aG docker ec2-user
+            newgrp docker
+
+      - name: Deploy Docker Container on EC2
+        run: | 
+         ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
             docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_NAME }}:latest
             docker stop my_app || true
