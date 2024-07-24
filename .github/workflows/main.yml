@@ -46,7 +46,7 @@ jobs:
 
       - name: Install Docker on EC2 Instance & deploy Docker container
         run: |
-          ssh -vvv -o StrictHostKeyChecking=no ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
+          # ssh -vvv -o StrictHostKeyChecking=no ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
             sudo yum update -y
             sudo yum install -y docker
             sudo systemctl start docker
