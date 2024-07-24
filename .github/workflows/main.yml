@@ -46,12 +46,24 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Install Docker and Deploy Container on EC2
+      - name: Send command to EC2 via SSM
         run: |
           aws ssm send-command \
             --document-name "AWS-RunShellScript" \
             --targets "Key=instanceids,Values=${{ secrets.INSTANCE_ID }}" \
-            --parameters 'commands=["sudo yum update -y", "sudo yum install -y docker", "sudo systemctl start docker", "sudo systemctl enable docker", "sudo usermod -aG docker ec2-user", "newgrp docker", "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com", "docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_NAME }}:latest", "docker stop hangman-container || true", "docker rm hangman-container || true", "docker run -d --name hangman-container -p 80:80 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_NAME }}:latest"]' \
+            --parameters 'commands=[
+              "sudo yum update -y", 
+              "sudo yum install -y docker", 
+              "sudo systemctl start docker", 
+              "sudo systemctl enable docker", 
+              "sudo usermod -aG docker ec2-user", 
+              "newgrp docker", 
+              "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com", 
+              "docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_NAME }}:latest", 
+              "docker stop hangman-container || true", 
+              "docker rm hangman-container || true", 
+              "docker run -d --name hangman-container -p 80:80 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_NAME }}:latest"
+            ]' \
             --timeout-seconds 600
           
 
