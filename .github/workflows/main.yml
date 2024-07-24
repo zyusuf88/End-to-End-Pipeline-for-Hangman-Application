@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v2
         
       - name: Configure AWS credentials
@@ -39,26 +39,45 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.3
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Install Docker on EC2 Instance & deploy Docker container
+      - name: Install Docker and Deploy Container on EC2
         run: |
-          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
-            sudo apt-get update
-            sudo apt-get install -y docker
-            sudo systemctl start docker
-            sudo systemctl enable docker
-            sudo usermod -aG docker $USER
-            newgrp docker
-            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-            docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_NAME }}:latest
-            docker stop hangman-container || true
-            docker rm hangman-container || true
-            docker run -d --name hangman-container -p 80:80 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_NAME }}:latest
-            EOF
+          aws ssm send-command \
+            --document-name "AWS-RunShellScript" \
+            --targets "Key=instanceids,Values=${{ secrets.INSTANCE_ID }}" \
+            --parameters 'commands=["sudo yum update -y", "sudo yum install -y docker", "sudo systemctl start docker", "sudo systemctl enable docker", "sudo usermod -aG docker ec2-user", "newgrp docker", "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com", "docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_NAME }}:latest", "docker stop hangman-container || true", "docker rm hangman-container || true", "docker run -d --name hangman-container -p 80:80 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_NAME }}:latest"]' \
+            --timeout-seconds 600
+          
+
+
+
+
+
+      # - name: Set up SSH
+      #   uses: webfactory/ssh-agent@v0.5.3
+      #   with:
+      #     ssh-private-key: ${{ secrets.SSH_KEY }}
+
+      # - name: Install Docker on EC2 Instance & deploy Docker container
+      #   run: |
+      #       sudo yum update
+      #       sudo yum install -y docker
+      #       sudo systemctl start docker
+      #       sudo systemctl enable docker
+      #       sudo usermod -aG docker $USER
+      #       newgrp docker
+      #       aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+      #       docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_NAME }}:latest
+      #       docker stop hangman-container || true
+      #       docker rm hangman-container || true
+      #       docker run -d --name hangman-container -p 80:80 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_NAME }}:latest
+      #       EOF
 
 
 
