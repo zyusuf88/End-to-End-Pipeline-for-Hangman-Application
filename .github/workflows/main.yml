@@ -18,7 +18,7 @@ jobs:
         with:
             aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
             aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws-region: eu-west-1
+            aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Log in to Amazon ECR
         run: |
@@ -46,6 +46,7 @@ jobs:
 
       - name: Install Docker on EC2 Instance & deploy Docker container
         run: |
+          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.INSTANCE_IP }} << 'EOF'
             sudo apt-get update
             sudo apt-get install -y docker
             sudo systemctl start docker
