@@ -45,7 +45,11 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-
+          
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
  
       - name: Install Docker on EC2 Instance &deploy Docker container
         uses: appleboy/ssh-action@v0.1.7 
@@ -58,9 +62,7 @@ jobs:
                 sudo yum install -y docker
                 sudo systemctl start docker
                 sudo systemctl enable docker
-                sudo usermod -aG docker $USER
-                newgrp docker
-                aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+                sudo usermod -aG docker $ec2-user
                 docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_NAME }}:latest
                 docker stop hangman-container || true
                 docker rm hangman-container || true
