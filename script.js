@@ -1,51 +1,52 @@
-const wordList = ['kiwi', 'grape', 'mango', 'apple', 'plum', 'peach', 'guava'];
-const numLives = 5;
+document.addEventListener('DOMContentLoaded', () => {
+    const wordList = ['kiwi', 'grape', 'mango', 'apple', 'plum', 'peach', 'guava'];
+    const numLives = 5;
+    let word, wordGuessed, numLetters, numLivesLeft, listOfGuesses;
 
-class Hangman {
-    constructor(wordList, numLives) {
-        this.wordList = wordList;
-        this.numLives = numLives;
-        this.word = this.chooseRandomWord();
-        this.wordGuessed = Array(this.word.length).fill('_');
-        this.numLetters = new Set(this.word).size;
-        this.listOfGuesses = [];
-        this.updateDisplay();
+    function chooseRandomWord() {
+        return wordList[Math.floor(Math.random() * wordList.length)];
     }
 
-    chooseRandomWord() {
-        return this.wordList[Math.floor(Math.random() * this.wordList.length)];
+    function initializeGame() {
+        word = chooseRandomWord();
+        wordGuessed = Array(word.length).fill('_');
+        numLetters = new Set(word).size;
+        numLivesLeft = numLives;
+        listOfGuesses = [];
+        updateDisplay();
+        showMessage("");
     }
 
-    checkGuess(guess) {
+    function checkGuess(guess) {
         guess = guess.toLowerCase();
-        if (this.listOfGuesses.includes(guess)) {
-            this.showMessage(`You've already tried the letter '${guess}'.`);
+        if (listOfGuesses.includes(guess)) {
+            showMessage(`You've already tried the letter '${guess}'.`);
         } else {
-            this.listOfGuesses.push(guess);
-            if (this.word.includes(guess)) {
-                this.showMessage(`Good guess! ${guess} is in the word.`);
-                for (let i = 0; i < this.word.length; i++) {
-                    if (this.word[i] === guess) {
-                        this.wordGuessed[i] = guess;
+            listOfGuesses.push(guess);
+            if (word.includes(guess)) {
+                showMessage(`Good guess! ${guess} is in the word.`);
+                for (let i = 0; i < word.length; i++) {
+                    if (word[i] === guess) {
+                        wordGuessed[i] = guess;
                     }
                 }
-                this.numLetters--;
-                if (this.numLetters === 0) {
-                    this.showMessage(`Congratulations! You've guessed the word: ${this.word}`, true);
+                numLetters--;
+                if (numLetters === 0) {
+                    showMessage(`Congratulations! You've guessed the word: ${word}`, true);
                 }
             } else {
-                this.numLives--;
-                this.updateHangman();
-                this.showMessage(`Sorry, ${guess} is not in the word.`);
-                if (this.numLives === 0) {
-                    this.showMessage(`Oh no! You've run out of lives. The word was: ${this.word}`, true);
+                numLivesLeft--;
+                updateHangman();
+                showMessage(`Sorry, ${guess} is not in the word.`);
+                if (numLivesLeft === 0) {
+                    showMessage(`Oh no! You've run out of lives. The word was: ${word}`, true);
                 }
             }
-            this.updateDisplay();
+            updateDisplay();
         }
     }
 
-    showMessage(message, isFinal = false) {
+    function showMessage(message, isFinal = false) {
         const messageElement = document.getElementById('message');
         messageElement.innerText = message;
         if (isFinal) {
@@ -54,29 +55,32 @@ class Hangman {
         }
     }
 
-    updateDisplay() {
-        document.getElementById('word-display').innerText = this.wordGuessed.join(' ');
-        document.getElementById('lives').innerText = this.numLives;
+    function updateDisplay() {
+        document.getElementById('word-display').innerText = wordGuessed.join(' ');
+        document.getElementById('lives').innerText = numLivesLeft;
     }
 
-    updateHangman() {
-        // Update hangman image based on lives left
+    function updateHangman() {
         const hangmanElement = document.getElementById('hangman');
-        hangmanElement.style.backgroundPosition = `-${(5 - this.numLives) * 200}px 0`;
+        hangmanElement.style.backgroundPosition = `-${(numLives - numLivesLeft) * 200}px 0`;
     }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const game = new Hangman(wordList, numLives);
 
     document.getElementById('guess-button').addEventListener('click', () => {
         const guessInput = document.getElementById('guess-input');
         const guess = guessInput.value;
         if (guess && guess.length === 1 && /^[a-zA-Z]$/.test(guess)) {
-            game.checkGuess(guess);
+            checkGuess(guess);
             guessInput.value = '';
         } else {
-            game.showMessage('Invalid letter. Please enter a single alphabetical character.');
+            showMessage('Invalid letter. Please enter a single alphabetical character.');
         }
     });
+
+    document.getElementById('restart-button').addEventListener('click', () => {
+        initializeGame();
+        document.getElementById('guess-button').disabled = false;
+        document.getElementById('guess-input').disabled = false;
+    });
+
+    initializeGame();
 });
