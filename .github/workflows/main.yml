@@ -49,7 +49,7 @@ jobs:
         with:
             host: ${{ secrets.INSTANCE_IP }}
             username: ec2-user
-            ssh-private-key: ${{ secrets.SSH_KEY }}
+            key: ${{ secrets.SSH_KEY }}
             script: |
                 sudo yum update
                 sudo yum install -y docker
