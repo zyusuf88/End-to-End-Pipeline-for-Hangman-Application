@@ -62,7 +62,7 @@ jobs:
                 sudo yum install -y docker
                 sudo systemctl start docker
                 sudo systemctl enable docker
-                sudo usermod -aG docker $ec2-user
+                sudo usermod -aG docker $USER
                 newgrp docker
                 exec sg docker newgrp `id -gn`
                 aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
