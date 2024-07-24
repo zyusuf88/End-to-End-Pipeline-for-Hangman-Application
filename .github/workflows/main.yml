@@ -46,7 +46,6 @@ jobs:
 
       - name: Install Docker on EC2 Instance & deploy Docker container
         run: |
-            sudo yum update -y
             sudo yum install -y docker
             sudo systemctl start docker
             sudo systemctl enable docker
