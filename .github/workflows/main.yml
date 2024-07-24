@@ -64,7 +64,6 @@ jobs:
                 sudo systemctl enable docker
                 sudo usermod -aG docker $USER
                 newgrp docker
-                exec sg docker newgrp `id -gn`
                 aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
                 docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_NAME }}:latest
                 docker stop hangman-game || true
