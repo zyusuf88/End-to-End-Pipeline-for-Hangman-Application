@@ -54,7 +54,7 @@ jobs:
       - name: Install Docker on EC2 Instance &deploy Docker container
         uses: appleboy/ssh-action@v0.1.7 
         with:
-            host: ${{ secrets.INSTANCE_IP }}
+            host: ${{ secrets.ELASTIC_IP }} # Uses the Elastic IP address for consistency 
             username: ec2-user
             key: ${{ secrets.SSH_KEY }}
             script: |
