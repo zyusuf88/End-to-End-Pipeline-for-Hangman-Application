@@ -1,6 +1,6 @@
-# CI/CD Pipeline for Hangman Application
+# End to End Pipeline for Hangman Application
 
-- [CI/CD Pipeline for Hangman Application](#cicd-pipeline-for-hangman-application)
+- [End to End Pipeline for Hangman Application](#end-to-end-pipeline-for-hangman-application)
   - [Introduction](#introduction)
   - [Project Overview](#project-overview)
   - [Importance and Benefits](#importance-and-benefits)
@@ -23,10 +23,10 @@ The Hangman application is a simple web-based game that allows users to play the
 
 ## Importance and Benefits
 
-**Automation:** Streamlines the process of building, testing, and deploying applications.
-**Consistency:** Ensures the application runs in the same environment across different stages of development and production.
-**Scalability:** Makes it easier to scale the application by deploying containers across multiple instances.
-**Efficiency:** Reduces manual intervention, allowing developers to focus on coding rather than deployment logistics.
+- **Automation:** Streamlines the process of building, testing, and deploying applications.
+- **Consistency:** Ensures the application runs in the same environment across different stages of development and production.
+- **Scalability:** Makes it easier to scale the application by deploying containers across multiple instances.
+- **Efficiency:** Reduces manual intervention, allowing developers to focus on coding rather than deployment logistics.
 
 ## Pipeline Overview
 The pipeline is triggered on every push to the **main** branch. It consists of two main jobs:
