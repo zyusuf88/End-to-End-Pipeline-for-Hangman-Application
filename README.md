@@ -5,7 +5,8 @@
   - [Project Overview](#project-overview)
   - [Importance and Benefits](#importance-and-benefits)
   - [Pipeline Overview](#pipeline-overview)
-  - [Jobs](#jobs)
+  - [**Build and Push Docker Image**](#build-and-push-docker-image)
+  - [**Deploy Docker Container**](#deploy-docker-container)
   - [Secrets](#secrets)
   - [Conclusion](#conclusion)
 
@@ -35,13 +36,12 @@ The pipeline is triggered on every push to the **main** branch. It consists of t
 2. **Deploy Docker Container**
 
 
-## Jobs
 
-1. **Build and Push Docker Image**
+## **Build and Push Docker Image**
    This job builds a Docker image from the code in the repository and pushes it to AWS ECR.
    - Runs on: ubuntu-latest
    - Steps:
- - Checkout code:
+1. **Checkout code:**
  ```
   - name: Checkout code
   uses: actions/checkout@v2
@@ -84,7 +84,7 @@ This step logs in to Amazon ECR. It is necessary for pushing Docker images to th
 ```
 This step builds the Docker image, tags it, and pushes it to the specified ECR repository. It is important because it prepares the application for deployment by containerising it and storing the container image in a repository.
 
-2. **Deploy Docker Container**
+## **Deploy Docker Container**
 This job deploys the Docker container to an EC2 instance.
 
 - Runs on: ubuntu-latest
