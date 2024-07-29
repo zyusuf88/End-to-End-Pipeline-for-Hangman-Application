@@ -12,10 +12,6 @@
 ## Introduction
 This project implements a powerful continuous integration and deployment (CI/CD) pipeline using GitHub Actions, designed to automate the build, push, and deployment processes for a Dockerised Hangman application. By utilising GitHub Actions and AWS services, this pipeline ensures that the Hangman application is consistently and reliably built, pushed to Amazon Elastic Container Registry (ECR), and deployed to an Amazon EC2 instance.
 
-Using GitHub Actions offers numerous benefits: it's natively integrated with GitHub, which makes setting up workflows straightforward and seamless. The vast library of pre-built actions saves time, allowing you to leverage community-contributed solutions for common tasks. Plus, GitHub Actions supports parallel execution and matrix builds, enabling you to run multiple tasks simultaneously and test across different environments efficiently.
-
-This pipeline not only simplifies the deployment process but also makes it scalable and efficient, allowing developers to focus on enhancing the application rather than dealing with deployment logistics. This project provides a practical example of modern CI/CD practices.
-
 
 ![Screenshot 2024-07-24 171804](https://github.com/user-attachments/assets/43478d5c-86e1-42a3-a4ac-ce2d0db2dc37) ![Screenshot 2024-07-24 171650](https://github.com/user-attachments/assets/98680649-ef92-4875-b1a9-837672dcfc30)
 
