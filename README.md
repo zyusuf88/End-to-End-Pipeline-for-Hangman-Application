@@ -19,7 +19,7 @@ This pipeline not only simplifies the deployment process but also makes it scala
 
 ![Screenshot 2024-07-24 171804](https://github.com/user-attachments/assets/43478d5c-86e1-42a3-a4ac-ce2d0db2dc37) ![Screenshot 2024-07-24 171650](https://github.com/user-attachments/assets/98680649-ef92-4875-b1a9-837672dcfc30)
 
-***These images demonstrate the successful deployment of the Dockerised Hangman application, showcasing the effectiveness and reliability of the CI/CD pipeline. ***
+***These images demonstrate the successful deployment of the Dockerised Hangman application, showcasing the effectiveness and reliability of the CI/CD pipeline.***
 
 ## Project Overview
 
@@ -153,6 +153,14 @@ This step sets up SSH using webfactory/ssh-agent@v0.5.3. It is necessary for sec
       docker run -d --name hangman-game -p 80:80 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_NAME }}:latest
 
 ```
+
+> [!NOTE]  
+> Initially, I faced **connectivity issues** when restarting the EC2 instances due to changing IP addresses.
+> To **ensure consistent connectivity** to the EC2 instance, I have used an Elastic IP address. 
+> An Elastic IP is a static IPv4 address associated with your AWS account that can be easily remapped to different instances within the same region. 
+> This ensures that the instance's IP address **remains constant** even if the instance is stopped and restarted, which is crucial for maintaining a reliable connection during the deployment process.
+
+
 This step uses appleboy/ssh-action@v0.1.7 to connect to the EC2 instance and execute a series of commands:
 
 - **Update the EC2 instance**: Ensures the instance is up-to-date.
